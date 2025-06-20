@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hendy cell</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgb(169, 187, 65);
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .heart {
+            position: relative;
+            width: 100px;
+            height: 90px;
+            cursor: pointer;
+            transform-origin: center;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .heart:before,
+        .heart:after {
+            position: absolute;
+            content: "";
+            left: 50px;
+            top: 0;
+            width: 50px;
+            height: 80px;
+            background: #ff4757;
+            border-radius: 50px 50px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+            box-shadow: 0 0 20px rgba(255, 71, 71, 0.6);
+        }
+
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        .heart:hover {
+            transform: scale(1.2);
+        }
+
+        .heart.pulse {
+            animation: heartbeat 0.5s ease-in-out;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.1);
+            }
+
+            50% {
+                transform: scale(1);
+            }
+
+            75% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 71, 87, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .color-changer {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            border-radius: 30px;
+            color: #ff4757;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .color-changer:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .message {
+            margin-top: 20px;
+            color: white;
+            font-size: 18px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .message.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <marquee behavior="direction"><h1>SELAMAT DATANG DI HENDY CELL</h1></marquee>
+    <div class="container">
+        <img width="300px" height="200px" src="c:\Users\hendi\Downloads\bisnis.jpg">
+        <h1>hendy cell</h1>
+        <center><div class="heart" id="heart"></div></center>
+        <button class="color-changer" id="colorChanger">Ubah Warna</button>
+        <div class="message" id="message">❤️ Kamu mengklik hatiku! ❤️</div>
+        <p>
+            <b>KLIK LINK DI BAWAH SINI UNTUK KONTAK SAYA</b>
+        </p>
+        <p>
+            <a href="https://wa.me/6285717415604">KLIK DI SINI UNTUK KONTAK SAYA</a>
+        </p>
+    </div>
+
+    <script>
+        const heart = document.getElementById('heart');
+        const colorChanger = document.getElementById('colorChanger');
+        const message = document.getElementById('message');
+        const colors = ['#ff4757', '#ff6b81', '#ff8d8d', '#ff9ff3', '#f368e0', '#e84393'];
+        let currentColorIndex = 0;
+
+        // Animasi detak jantung
+        setInterval(() => {
+            heart.classList.add('pulse');
+            setTimeout(() => {
+                heart.classList.remove('pulse');
+            }, 500);
+        }, 2000);
+
+        // Efek partikel saat diklik
+        heart.addEventListener('click', (e) => {
+            // Tambahkan efek pulsa cepat
+            heart.classList.add('pulse');
+            setTimeout(() => {
+                heart.classList.remove('pulse');
+            }, 500);
+
+            // Tampilkan pesan
+            message.classList.add('show');
+            setTimeout(() => {
+                message.classList.remove('show');
+            }, 2000);
+
+            // Buat partikel
+            createParticles(e.clientX, e.clientY);
+        });
+
+        // Fungsi untuk membuat partikel
+        function createParticles(x, y) {
+            const particles = 30;
+
+            for (let i = 0; i < particles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                // Ukuran acak
+                const size = Math.random() * 10 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                // Warna acak dari daftar warna
+                const colorIndex = Math.floor(Math.random() * colors.length);
+                particle.style.backgroundColor = colors[colorIndex];
+
+                // Posisi awal di sekitar titik klik
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+
+                document.body.appendChild(particle);
+
+                // Animasi partikel
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 5 + 2;
+                const lifetime = Math.random() * 2000 + 1000;
+
+                let posX = x;
+                let posY = y;
+                let opacity = 1;
+
+                const animate = () => {
+                    posX += Math.cos(angle) * velocity;
+                    posY += Math.sin(angle) * velocity;
+                    opacity -= 0.01;
+
+                    particle.style.left = `${posX}px`;
+                    particle.style.top = `${posY}px`;
+                    particle.style.opacity = opacity;
+
+                    if (opacity > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        particle.remove();
+                    }
+                };
+
+                setTimeout(() => {
+                    animate();
+                }, Math.random() * 500);
+            }
+        }
+
+        // Ganti warna hati
+        colorChanger.addEventListener('click', () => {
+            currentColorIndex = (currentColorIndex + 1) % colors.length;
+            const newColor = colors[currentColorIndex];
+
+            // Ubah warna dengan transition
+            heart.style.transition = 'all 0.5s ease';
+
+            // Ubah warna pseudo-elements
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .heart:before, .heart:after {
+                    background: ${newColor};
+                    box-shadow: 0 0 20px ${newColor + '80'};
+                    transition: all 0.5s ease;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Hapus style setelah transisi selesai
+            setTimeout(() => {
+                style.remove();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
